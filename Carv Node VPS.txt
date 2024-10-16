@@ -1,0 +1,82 @@
+<!-- We rent a server with system requirements:
+Recommended:
+Fast CPU with 2+ cores
+4GB+ RAM
+8+ MBit/sec download Internet service
+OS Ubutntu 24.04
+
+1. Update Ubuntu OS First, update your Ubuntu system to the latest packages: -->
+
+sudo apt update && sudo apt upgrade -y
+
+<!-- 2. Install Required Applications. Install the necessary applications: `screen`, `git`, and `make`: -->
+
+sudo apt install screen -y && \
+sudo apt install make -y && \
+sudo apt install git -y
+
+<!-- 3. Install Go. Download and install Go: -->
+
+cd $HOME
+ver="1.21.3"
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz"
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz"
+rm "go$ver.linux-amd64.tar.gz"
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+go version
+
+<!-- 4. Clone the CARV Source Code. Clone the CARV Verifier repository and build the source code: -->
+
+git clone https://github.com/carv-protocol/verifier.git && cd verifier && make build
+
+<!-- 5. Navigate to the Bin Folder. Change into the `bin` folder where the keystone generator and files to start the CARV node application: -->
+
+cd bin
+
+<!-- 6. Create a Screen Session. Create a screen session called CARV: -->
+
+screen -S carv
+
+<!-- 7. Generate a random burner wallet. Go to the https://chaintool.tech/generateWallet/evmWallet and generate a random wallet by clicking
+ on create. You can either copy the address, mnemonic and pri-key to a text editor or export the generated wallet by clicking on download
+
+8. Delegate Your Node
+Go to the [CARV Alphanet Explorer](https://alphanet-explorer.carv.io/verifiers),
+connect your wallet, and delegate your node to the generated wallet address.
+
+9. Start the Verifier Node.Start the verifier node using the following command: -->
+
+./verifier -private-key <Your Private Key> -reward-address <Your Reward Address> -commission-rate <Your Commission Rate>
+
+	<!-- Replace the placeholders with your specific details:
+
+	- <Path to keystore file>: The file path generated during the keystore creation.
+	
+	- <keystore password>: The password you used for the keystore.
+	
+	- <Your Reward Address>: The wallet address for your commission rewards.
+	
+	- <Your Commission Rate>: Your commission rate (0–100). 
+This rate determines the percentage of CARV rewards you want to receive from those who delegate their node to you.
+ The commission rate can be set between 0 and 100, where 0 means you don’t take any commission from delegators,
+ and 100 means you take all the rewards.
+	
+Important: remove the first 0x from your private key, for example if your generated private key is
+ 0x4190ae49dcb5ca5dd4eda9db6f4ab6d7b73ec790afb921c64bfba026895e9e69,
+ just put in 4190ae49dcb5ca5dd4eda9db6f4ab6d7b73ec790afb921c64bfba026895e9e69 in the section private key -->
+
+ <!-- Example of how the command should look like -->
+
+ ./verifier -private-key 4190ae49dcb5ca5dd4eda9db6f4ab6d7b73ec790afb921c64bfba026895e9e69 -reward-address eb4d75edb0dca607c9bb0a1388f1f0461f0ba045 -commission-rate 5
+
+ <!-- If you get the error below with GaslessService failed Sytem is busy due to high volume,
+ just reenter the command several times till it goes through -->
+
+ <!-- 10. Manage the Screen Session. To minimize the screen running your verifier node: Press `Ctrl + A`, then `D`. 
+ To re-enter the screen session: -->
+
+ screen -r carv
+
+ <!-- Congratulations, you have successfully installed your CARV Verifier Node! -->
